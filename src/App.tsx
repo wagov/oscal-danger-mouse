@@ -28,7 +28,7 @@ function App() {
       default: choices[0]
     }
   })
-  
+
   const schema: RJSFSchema = {
     title: 'ACSC ISM Controls',
     type: 'object',
