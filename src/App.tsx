@@ -1,20 +1,43 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import validator from '@rjsf/validator-ajv8';
+import Form from '@rjsf/core';
+import { RJSFSchema } from '@rjsf/utils';
+import jsonata from 'jsonata';
 import './App.css'
+
+import ism_oscal from "./controls/ISM_catalog.json";
+
+// Export some tools for testing
+(window as any).oscaldm = {
+  ism_oscal: ism_oscal,
+  jsonata: jsonata
+}
 
 function App() {
   const [count, setCount] = useState(0)
 
+  const schema: RJSFSchema = {
+    title: 'Todo',
+    type: 'object',
+    required: ['title'],
+    properties: {
+      title: { type: 'string', title: 'Title', default: 'A new task' },
+      done: { type: 'boolean', title: 'Done?', default: false },
+    },
+  };
+
+  const log = (type: string) => console.log.bind(console, type);
+
   return (
     <>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <Form
+          schema={schema}
+          validator={validator}
+          onChange={log('changed')}
+          onSubmit={log('submitted')}
+          onError={log('errors')}
+        />
       </div>
       <h1>Vite + React</h1>
       <div className="card">

@@ -4,12 +4,16 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@rjsf/core": "^5.9.0",
+    "@rjsf/utils": "^5.9.0",
+    "@rjsf/validator-ajv8": "^5.9.0",
+    "jsonata": "^2.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
