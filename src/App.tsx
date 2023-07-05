@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import validator from '@rjsf/validator-ajv8';
 import Form from '@rjsf/core';
 import { RJSFSchema } from '@rjsf/utils';
@@ -23,7 +22,7 @@ function App() {
   controls.forEach((control: { [x: string]: any; }) => {
     control_fields[control["id"]] = {
       type: 'string',
-      title: control.title + " (E8 " + control.props.filter(a => a.name == "essential-eight-applicability")[0].value + ")",
+      title: control.title + " (E8 " + control.props.filter((prop: { name: string; }) => prop.name == "essential-eight-applicability")[0].value + ")",
       description: control.parts[0].prose,
       enum: choices,
       default: choices[0]
