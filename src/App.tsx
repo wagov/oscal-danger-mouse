@@ -6,51 +6,48 @@ import jsonata from 'jsonata';
 import './App.css'
 
 import ism_oscal from "./controls/ISM_catalog.json";
+const control_query = 'catalog.groups.groups.groups.controls.props[name = "essential-eight-applicability"].%';
+const controls = await jsonata(control_query).evaluate(ism_oscal);
 
 // Export some tools for testing
-(window as any).oscaldm = {
+(globalThis as any).oscaldm = {
   ism_oscal: ism_oscal,
-  jsonata: jsonata
+  jsonata: jsonata,
+  controls: controls
 }
 
 function App() {
-  const [count, setCount] = useState(0)
+  const choices = ["Not Implemented", "Partially Implemented", "Largely Implemented", "Fully Implemented"];
 
+  const control_fields: { [x: string]: any; } = {};
+  controls.forEach((control: { [x: string]: any; }) => {
+    control_fields[control["id"]] = {
+      type: 'string',
+      title: control.title + " (E8 " + control.props.filter(a => a.name == "essential-eight-applicability")[0].value + ")",
+      description: control.parts[0].prose,
+      enum: choices,
+      default: choices[0]
+    }
+  })
+  
   const schema: RJSFSchema = {
-    title: 'Todo',
+    title: 'ACSC ISM Controls',
     type: 'object',
-    required: ['title'],
-    properties: {
-      title: { type: 'string', title: 'Title', default: 'A new task' },
-      done: { type: 'boolean', title: 'Done?', default: false },
-    },
+    properties: control_fields
   };
-
-  const log = (type: string) => console.log.bind(console, type);
 
   return (
     <>
+      <h1>OSCAL Danger Mouse</h1>
+      <p>Controls from <a href="https://www.cyber.gov.au/resources-business-and-government/essential-cyber-security/ism/oscal">ISM catalog</a> filtered with jsonata query:
+        <pre>{control_query}</pre>
+      </p>
       <div>
         <Form
           schema={schema}
           validator={validator}
-          onChange={log('changed')}
-          onSubmit={log('submitted')}
-          onError={log('errors')}
         />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
